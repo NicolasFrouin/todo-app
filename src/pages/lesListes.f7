@@ -1,0 +1,70 @@
+<template>
+	<div class="page" data-name="lesListes" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+				<!-- <a href="/" class="link">Right Link</a> -->
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Les Liste ici</h1>
+			<div class="row justify-content-flex-end" style="padding:20px">
+				<div class="">
+					<a href="/ajouterListe" class="col button button-fill color-blue">Ajouter une liste</a>
+				</div>
+			</div>
+			${lesListes.map((liste => $h
+			`<div class="card elevation-demo elevation-5">
+				<div class="row justify-content-flex-center">
+					<div class="col-50">
+						<div class="card-header">${liste.nom}</div>
+					</div>
+					<div class="">
+						<a href="/lesTaches/${liste.id_liste}" class="col button button-outline">Les Taches</a>
+					</div>
+					<div class="col-70">
+						<div class="card-content card-content-padding">${liste.description}</div>
+					</div>
+					<div class="">
+						<a href="/modifierListe/${liste.id_liste}"
+							class="col button color-orange button-outline">Modifier</a>
+					</div>
+					<div class="">
+						<a href="" @click=${()=> deleteListe(liste.id_liste)} class="col button color-red
+							button-outline">Supprimer</a>
+					</div>
+				</div>
+			</div>`
+			))}
+
+		</div>
+	</div>
+</template>
+
+<script>
+	export default async (props, { $f7 }) => {
+		var lesListes = [];
+		await $f7.request.json("http://localhost/todo-api/lesListes.php")
+			.then(res => {
+				lesListes = res.data;
+			});
+
+		function deleteListe(id_liste) {
+			jQuery.ajax({
+				url: "http://localhost/todo-api/lesListes.php",
+				method: "DELETE",
+				data: { id_liste },
+			}).done((res) => {
+				res = JSON.parse(res)
+				res.error && alert(res.message ?? "Une erreur est survenue")
+			})
+		}
+
+		return $render;
+	}
+</script>

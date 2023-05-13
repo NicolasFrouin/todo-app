@@ -1,0 +1,57 @@
+<template>
+	<div class="page" data-name="lesTypes" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+				<!-- <a href="/" class="link">Right Link</a> -->
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Les Types ici</h1>
+			<div class="row justify-content-flex-end" style="padding:20px">
+				<div class="">
+					<a href="/ajouterType" class="col button button-fill color-blue">Ajouter un type</a>
+				</div>
+			</div>
+			${lesTypes.map((unType) => $h
+			`
+			<div class="card elevation-demo elevation-5" style="border: solid 1px ${unType.couleur}">
+				<div class="card-header">${unType.nom}</div>
+				<div class="card-content card-content-padding">Code couleur : <span
+						style="color:${unType.couleur}">${unType.couleur}</span></div>
+				<div class="">
+					<a href="" @click=${()=> DeleleteType(unType.id_type)} class="col button color-red
+						button-outline">Supprimer</a>
+				</div>
+			</div>
+			`
+			)}
+		</div>
+	</div>
+</template>
+<script>
+	export default async (props, { $f7 }) => {
+		function DeleleteType(id) {
+			jQuery.ajax({
+				url: "http://localhost/todo-api/lesTypes.php",
+				method: "DELETE",
+				data: { id },
+			}).done((res) => {
+				res = JSON.parse(res)
+				res.error && alert(res.message ?? "Une erreur est survenue")
+			})
+		}
+		var lesTypes = [];
+		await $f7.request.json("http://localhost/todo-api/lesTypes.php")
+			.then(res => {
+				lesTypes = res.data;
+				// console.log(res.data);
+			});
+		return $render;
+	}
+</script>

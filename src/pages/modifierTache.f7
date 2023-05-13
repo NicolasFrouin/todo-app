@@ -1,0 +1,96 @@
+<template>
+	<div class="page" data-name="modifierTache" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Modifier la Tache ${$f7route.params.idTache}</h1>
+			<form class="list" id="my-form">
+				<ul>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouveau nom</div>
+								<div class="item-input-wrap">
+									<input type="text" name="nom" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouvelle description</div>
+								<div class="item-input-wrap">
+									<input type="text" name="description" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouvelle difficulté</div>
+								<div class="item-input-wrap">
+									<select name="niveau">
+										<option value="" selected="selected"></option>
+										<option value="1">Facile</option>
+										<option value="2">Moyen</option>
+										<option value="3">Haute</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouveaux type</div>
+								<div class="item-input-wrap">
+									<select name="ref_type" id="type-select">
+										<option value="" selected></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="row justify-content-center">
+				<div class="col-50" style="width: min-content;">
+					<a class="button button-fill convert-form-to-data" href="#">Valider</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default (props, { $, $on, $f7 }) => {
+		$on("pageInit", () => {
+			$(".convert-form-to-data").on("click", function () {
+				var formData = $f7.form.convertToData("#my-form");
+				Object.keys({ ...formData }).forEach(k => {
+					if (formData[k] === "") delete formData[k]
+				});
+				if (jQuery.isEmptyObject(formData)) return;
+				jQuery.ajax({
+					url: "http://localhost/todo-api/lesTaches.php",
+					method: "PUT",
+					data: { data: formData, key: props.idTache },
+				}).done((res) => {
+					res = JSON.parse(res)
+					res.error && alert(res.message ?? "Une erreur est survenue")
+				})
+			});
+		});
+		return $render;
+	}
+</script>

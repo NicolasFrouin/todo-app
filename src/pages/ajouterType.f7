@@ -1,0 +1,85 @@
+<template>
+	<div class="page" data-name="ajouterType" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+				<!-- <a href="/" class="link">Right Link</a> -->
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Nouveau Type</h1>
+			<form class="list" id="my-form">
+				<ul>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nom du Type</div>
+								<div class="item-input-wrap">
+									<input type="text" name="nom" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Code couleur du Type</div>
+								<div class="item-input-wrap">
+									<input type="color" name="couleur" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Type parent</div>
+								<div class="item-input-wrap">
+									<select name="parentType" id="parent-type-select">
+										<option value="" selected></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="row justify-content-center">
+				<div class="col-50" style="width: min-content;">
+					<a class="button button-fill convert-form-to-data" href="#">Valider</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+<script>
+	export default (props, { $, $on, $f7 }) => {
+		$on('pageInit', async () => {
+			$('.convert-form-to-data').on('click', function () {
+				var formData = $f7.form.convertToData('#my-form');
+				if (formData.nom === "") return alert("Veuillez saisir un nom de type");
+				$f7.request({
+					url: 'http://localhost/todo-api/lesTypes.php',
+					method: 'POST',
+					data: formData,
+				});
+			});
+
+			await $f7.request.json('http://localhost/todo-api/lesTypes.php')
+				.then(res => {
+					const parentSelect = jQuery("#parent-type-select")
+					jQuery.each(res.data, function (i, v) {
+						parentSelect.append(
+							jQuery("<option>").attr("value", v.id_type).text(v.nom)
+						)
+					})
+				});
+		});
+		return $render;
+	}
+</script>

@@ -1,0 +1,26 @@
+<template>
+  <div class="page" data-name="home" style="background-color:#EBEDEF">
+    
+    <!-- Scrollable page content-->
+    <div class="page-content">
+      <div class="block block-strong" style="margin: 50px; background-color:white">
+        <h1 class="text-align-center">Application TODO</h1>
+      </div>
+
+
+      <div class="row justify-content-center">
+        <div style="width: min-content; margin:10px 50px;">
+          <a href="/lesListes/" class="button button-raised button-fill popup-open" style="background-color:#336699">Afficher les Listes</a>
+        </div>
+        <div style="width: min-content; margin:10px 50px;">
+          <a href="/lesTypes/" class="button button-raised button-fill popup-open" style="background-color:#86BBD8">Afficher les Types</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  export default () => {
+    return $render;
+  }
+</script>

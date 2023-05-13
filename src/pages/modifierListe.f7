@@ -1,0 +1,72 @@
+<template>
+	<div class="page" data-name="modifierListe" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+				<!-- <a href="/" class="link">Right Link</a> -->
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Modifier liste</h1>
+			<form class="list" id="my-form">
+				<ul>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouveau nom</div>
+								<div class="item-input-wrap">
+									<input type="text" name="nom" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nouvelle description</div>
+								<div class="item-input-wrap">
+									<input type="text" name="description" />
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="row justify-content-center">
+				<div class="col-50" style="width: min-content;">
+					<a class="button button-fill convert-form-to-data" href="#">Valider</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+
+
+<script>
+	export default (props, { $, $on, $f7 }) => {
+		$on("pageInit", () => {
+			$(".convert-form-to-data").on("click", function () {
+				var formData = $f7.form.convertToData("#my-form");
+				Object.keys({ ...formData }).forEach(k => {
+					if (formData[k] === "") delete formData[k]
+				});
+				if (jQuery.isEmptyObject(formData)) return;
+				jQuery.ajax({
+					url: "http://localhost/todo-api/lesListes.php",
+					method: "PUT",
+					data: { data: formData, key: props.idListe },
+				}).done((res) => {
+					res = JSON.parse(res)
+					res.error && alert(res.message ?? "Une erreur est survenue")
+				})
+			});
+		});
+		return $render;
+	}
+</script>

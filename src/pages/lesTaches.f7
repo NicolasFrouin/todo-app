@@ -1,0 +1,62 @@
+<template>
+	<div class="page" data-name="lesTaches" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Les Taches ici de la liste N° ${$f7route.params.idListe}</h1>
+			<div class="row justify-content-flex-end" style="padding:20px">
+				<div class="">
+					<a href="/ajouterTache/${$f7route.params.idListe}" class="col button button-fill color-blue">Ajouter
+						une
+						Tache</a>
+				</div>
+			</div>
+			${lesTaches.map((tache => $h
+			`<div class="card">
+				<div class="card-header">${tache.nom_tache}</div>
+				<div class="card-content card-content-padding">${tache.tache_desc}</div>
+				<div class="card-footer">Niveau : ${tache.niveau} - Type : ${tache.nom_type}</div>
+				<div class="row justify-content-center">
+					<div class="">
+						<a href="/modifierTache/${tache.id_tache}"
+							class="col button color-orange button-outline">Modifier</a>
+					</div>
+					<div class="">
+						<a href="" @click=${()=> deleteTache(tache.id_tache)} class="col button color-red
+							button-outline">Supprimer</a>
+					</div>
+				</div>
+			</div>`
+			))}
+		</div>
+	</div>
+</template>
+<script>
+	export default async (props, { $f7, $f7route }) => {
+		var lesTaches = [];
+		await $f7.request.json("http://localhost/todo-api/lesTaches.php", { id_liste: $f7route.params.idListe })
+			.then(res => {
+				lesTaches = res.data;
+			});
+
+		function deleteTache(id_tache) {
+			jQuery.ajax({
+				url: "http://localhost/todo-api/lesTaches.php",
+				method: "DELETE",
+				data: { id_tache },
+			}).done((res) => {
+				res = JSON.parse(res)
+				res.error && alert(res.message ?? "Une erreur est survenue")
+			})
+		}
+		return $render;
+	}
+</script>

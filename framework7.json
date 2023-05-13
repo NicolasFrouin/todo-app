@@ -1,0 +1,19 @@
+{
+  "cwd": "/home/runner/todo-f7",
+  "type": [
+    "web"
+  ],
+  "name": "robert-app",
+  "framework": "core",
+  "template": "blank",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": true,
+    "color": "#9567ef",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}

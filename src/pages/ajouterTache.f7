@@ -1,0 +1,98 @@
+<template>
+	<div class="page" data-name="ajouterTache" style="background-color:#EBEDEF">
+		<!-- Toolbar-->
+		<div class="toolbar toolbar-top">
+			<div class="toolbar-inner">
+				<a href="#" class="link back">
+					<i class="icon icon-back"></i>
+					<span class="if-not-md">Retour</span>
+				</a>
+			</div>
+		</div>
+		<!-- Scrollable page content-->
+		<div class="page-content">
+			<h1 class="text-align-center">Nouvelle Tache de la liste N° ${$f7route.params.idListe}</h1>
+			<form class="list" id="my-form">
+				<ul>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Nom de tache</div>
+								<div class="item-input-wrap">
+									<input type="text" name="nom" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Description de tache</div>
+								<div class="item-input-wrap">
+									<input type="text" name="description" />
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Difficulté</div>
+								<div class="item-input-wrap">
+									<select name="niveau">
+										<option value="1" selected="selected">Facile</option>
+										<option value="2">Moyen</option>
+										<option value="3">Haute</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content item-input">
+							<div class="item-inner">
+								<div class="item-title item-label">Type</div>
+								<div class="item-input-wrap">
+									<select name="ref_type" id="type-select">
+									</select>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</form>
+			<div class="row justify-content-center">
+				<div class="col" style="width: min-content;">
+					<a class="button button-fill convert-form-to-data" href="#">Valider</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default (props, { $, $on, $f7 }) => {
+		$on("pageInit", async () => {
+			$(".convert-form-to-data").on("click", function () {
+				var formData = { ...$f7.form.convertToData("#my-form"), ref_liste: props.idListe };
+				if (formData.nom === "") return alert("Veuillez saisir le nom de la tâche");
+				$f7.request({
+					url: "http://localhost/todo-api/lesTaches.php",
+					method: "POST",
+					data: formData,
+				});
+			});
+
+			await $f7.request.json('http://localhost/todo-api/lesTypes.php')
+				.then(res => {
+					const typeSelect = jQuery("#type-select")
+					jQuery.each(res.data, function (i, v) {
+						typeSelect.append(
+							jQuery("<option>").attr({ value: v.id_type, selected: i == 0 ? "selected" : null }).text(v.nom)
+						)
+					})
+				});
+		});
+		return $render;
+	}
+</script>
